@@ -25,7 +25,7 @@ enum struct NumberType
 };
 
 //////////////////////////////////////////////////////////////////////////////
-// NATIVE DEFINITIONS                                                       //
+// ADDRESS NATIVES                                                          //
 //////////////////////////////////////////////////////////////////////////////
 
 static cell_t Native_LoadFromAddress64(IPluginContext* pContext, const cell_t* params)
@@ -125,7 +125,7 @@ static cell_t Native_FromPseudoAddress(IPluginContext* pContext, const cell_t* p
 
 static cell_t Native_ToPseudoAddress(IPluginContext* pContext, const cell_t* params)
 {
-    // Obtain parameters;
+    // Obtain parameters.
     uintptr_t* address;
 
     // Get the address to the address buffer parameter.
@@ -155,6 +155,78 @@ static cell_t Native_GetEntityAddress64(IPluginContext* pContext, const cell_t* 
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// INT64 NATIVES                                                            //
+//////////////////////////////////////////////////////////////////////////////
+
+static cell_t Native_AddInt64(IPluginContext* pContext, const cell_t* params)
+{
+    // Obtain parameters.
+    int64_t* left;
+    int64_t* right;
+    int64_t* result;
+    
+    // Obtain addresses to buffers.
+    pContext->LocalToPhysAddr(params[1], reinterpret_cast<cell_t**>(&left));
+    pContext->LocalToPhysAddr(params[2], reinterpret_cast<cell_t**>(&right));
+    pContext->LocalToPhysAddr(params[3], reinterpret_cast<cell_t**>(&result));
+
+    // Perform add and return.
+    *result = *left + *right;
+    return 0;
+}
+
+static cell_t Native_SubInt64(IPluginContext* pContext, const cell_t* params)
+{
+    // Obtain parameters.
+    int64_t* left;
+    int64_t* right;
+    int64_t* result;
+    
+    // Obtain addresses to buffers.
+    pContext->LocalToPhysAddr(params[1], reinterpret_cast<cell_t**>(&left));
+    pContext->LocalToPhysAddr(params[2], reinterpret_cast<cell_t**>(&right));
+    pContext->LocalToPhysAddr(params[3], reinterpret_cast<cell_t**>(&result));
+
+    // Perform add and return.
+    *result = *left - *right;
+    return 0;
+}
+
+static cell_t Native_MulInt64(IPluginContext* pContext, const cell_t* params)
+{
+    // Obtain parameters.
+    int64_t* left;
+    int64_t* right;
+    int64_t* result;
+    
+    // Obtain addresses to buffers.
+    pContext->LocalToPhysAddr(params[1], reinterpret_cast<cell_t**>(&left));
+    pContext->LocalToPhysAddr(params[2], reinterpret_cast<cell_t**>(&right));
+    pContext->LocalToPhysAddr(params[3], reinterpret_cast<cell_t**>(&result));
+
+    // Perform add and return.
+    *result = *left * *right;
+    return 0;
+}
+
+static cell_t Native_DivInt64(IPluginContext* pContext, const cell_t* params)
+{
+    // Obtain parameters.
+    int64_t* left;
+    int64_t* right;
+    int64_t* result;
+    
+    // Obtain addresses to buffers.
+    pContext->LocalToPhysAddr(params[1], reinterpret_cast<cell_t**>(&left));
+    pContext->LocalToPhysAddr(params[2], reinterpret_cast<cell_t**>(&right));
+    pContext->LocalToPhysAddr(params[3], reinterpret_cast<cell_t**>(&result));
+
+    // Perform add and return.
+    *result = *left * *right;
+    return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // NATIVE EXPORTS                                                           //
 //////////////////////////////////////////////////////////////////////////////
 
@@ -164,6 +236,11 @@ sp_nativeinfo_t g_AddressNatives[] = {
     { "Native_FromPseudoAddress",   Native_FromPseudoAddress },
     { "Native_ToPseudoAddress",     Native_ToPseudoAddress },
     { "Native_GetEntityAddress64",  Native_GetEntityAddress64 },
+
+    { "Native_AddInt64",            Native_AddInt64 },
+    { "Native_SubInt64",            Native_SubInt64 },
+    { "Native_MulInt64",            Native_MulInt64 },
+    { "Native_DivInt64",            Native_DivInt64 },
 
     { nullptr,                      nullptr }
 };

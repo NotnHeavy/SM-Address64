@@ -16,18 +16,22 @@
 // GLOBALS                                                                  //
 //////////////////////////////////////////////////////////////////////////////
 
-// Assumes that values are stored in little endian.
-enum struct int64_t
-{
-    int low;
-    int high;
-}
-#define NULL ({0, 0})
+#define NULL		({ 0, 0 })
+
+#define UINT64_MAX	({ 0xFFFFFFFF, 0xFFFFFFFF })
+#define UINT64_MIN	({ 0, 0 })
+#define INT64_MAX	({ 0xFFFFFFFF, 0x7FFFFFFF })
+#define INT64_MIN	({ 0x00000000, 0x80000000 })
+
+#define UINT_MAX	(0xFFFFFFFF)
+#define UINT_MIN	(0)
+#define INT_MAX		(cellmax)
+#define INT_MIN		(cellmin)
 
 const NumberType NumberType_Int64 = view_as<NumberType>(3);
 
 //////////////////////////////////////////////////////////////////////////////
-// EXPOSED FUNCTIONS                                                        //
+// ADDRESS FUNCTIONS                                                        //
 //////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -105,6 +109,196 @@ stock int64_t GetEntityAddress64(int entity)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// INT64_T FUNCTIONS                                                        //
+//////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Adds an int64_t to an int64_t.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int64_t value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t AddInt64(int64_t left, int64_t right)
+{
+	int64_t result;
+	Native_AddInt64(left, right, result);
+	return result;
+}
+
+/**
+ * Subs an int64_t from an int64_t.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int64_t value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t SubInt64(int64_t left, int64_t right)
+{
+	int64_t result;
+	Native_SubInt64(left, right, result);
+	return result;
+}
+
+/**
+ * Multiplies an int64_t by an int64_t.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int64_t value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t MulInt64(int64_t left, int64_t right)
+{
+	int64_t result;
+	Native_MulInt64(left, right, result);
+	return result;
+}
+
+/**
+ * Divides an int64_t by an int64_t.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int64_t value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t DivInt64(int64_t left, int64_t right)
+{
+	int64_t result;
+	Native_DivInt64(left, right, result);
+	return result;
+}
+
+/**
+ * Adds an int to an int64_t.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t IntAddInt64(int64_t left, int right)
+{
+	int64_t result;
+	int64_t buffer;
+	buffer.low = right;
+	Native_AddInt64(left, buffer, result);
+	return result;
+}
+
+/**
+ * Subtracts an int from an int64_t.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t IntSubInt64(int64_t left, int right)
+{
+	int64_t result;
+	int64_t buffer;
+	buffer.low = right;
+	Native_SubInt64(left, buffer, result);
+	return result;
+}
+
+/**
+ * Multiplies an int64_t by an int.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t IntMulInt64(int64_t left, int right)
+{
+	int64_t result;
+	int64_t buffer;
+	buffer.low = right;
+	Native_MulInt64(left, buffer, result);
+	return result;
+}
+
+/**
+ * Divides an int64_t by an int.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t IntDivInt64(int64_t left, int right)
+{
+	int64_t result;
+	int64_t buffer;
+	buffer.low = right;
+	Native_DivInt64(left, buffer, result);
+	return result;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// INT64_T ENUM STRUCT                                                      //
+//////////////////////////////////////////////////////////////////////////////
+
+// A little-endian 64-bit integer structure.
+enum struct int64_t
+{
+	// Fields.
+    int low;
+    int high;
+
+	// Assignment.
+	void Assign(int right)
+	{
+		this.low = right;
+		this.high = 0;
+	}
+	void Assign64(int64_t right)
+	{
+		this.low = right.low;
+		this.high = right.high;
+	}
+
+	// Arithmetic operations.
+	void Add(int right)
+	{
+		int64_t buffer;
+		buffer.low = right;
+		Native_AddInt64(this, buffer, this);
+	}
+	void Sub(int right)
+	{
+		int64_t buffer;
+		buffer.low = right;
+		Native_SubInt64(this, buffer, this);
+	}
+	void Mul(int right)
+	{
+		int64_t buffer;
+		buffer.low = right;
+		Native_MulInt64(this, buffer, this);
+	}
+	void Div(int right)
+	{
+		int64_t buffer;
+		buffer.low = right;
+		Native_DivInt64(this, buffer, this);
+	}
+	void Add64(int64_t right)
+	{
+		Native_AddInt64(this, right, this);
+	}
+	void Sub64(int64_t right)
+	{
+		Native_SubInt64(this, right, this);
+	}
+	void Mul64(int64_t right)
+	{
+		Native_MulInt64(this, right, this);
+	}
+	void Div64(int64_t right)
+	{
+		Native_DivInt64(this, right, this);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // NATIVES                                                                  //
 //////////////////////////////////////////////////////////////////////////////
 
@@ -114,8 +308,13 @@ native void Native_FromPseudoAddress(Address pseudoAddress, any address64[2]);
 native Address Native_ToPseudoAddress(any address64[2]);
 native void Native_GetEntityAddress64(int entity, any address64[2]);
 
+native void Native_AddInt64(any left[2], any right[2], any result[2]);
+native void Native_SubInt64(any left[2], any right[2], any result[2]);
+native void Native_MulInt64(any left[2], any right[2], any result[2]);
+native void Native_DivInt64(any left[2], any right[2], any result[2]);
+
 //////////////////////////////////////////////////////////////////////////////
-// DO NOT EDIT BELOW THIS LINE                                              //
+// EXTENSION INTERFACE                                                      //
 //////////////////////////////////////////////////////////////////////////////
 
 public Extension __ext_sm_address64 = 

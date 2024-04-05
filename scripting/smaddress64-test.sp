@@ -54,7 +54,29 @@ public void OnPluginStart()
 
     // convert back to pseudo-address
     PrintToServer("random_subroutine_absolute to pseduo-address: %u\n", ToPseudoAddress(random_subroutine_absolute));
-    
+
+    // arithmetic tests;
+    int64_t a = { 2, 0 };
+    int64_t b = { 3, 1 };
+
+    PrintToServer("a: low %u high %u", a.low, a.high);
+    a.Add64(b);
+    PrintToServer("a + b: low %u high %u", a.low, a.high);
+
+    int64_t c = { 244, 3 };
+    int64_t d = { 594, 34134143 };
+    int64_t f;
+
+    PrintToServer("c: low %u high %u", c.low, c.high);
+    f = MulInt64(c, d); // e doesn't work, fail
+    PrintToServer("c * d: low %u high %u", f.low, f.high);
+
+    int64_t g = { 489, 1 };
+    int h = 1404;
+    PrintToServer("g: low %u high %u", g.low, g.high);
+    g.Sub(h);
+    PrintToServer("g - h: low %u high %u\n", g.low, g.high);
+
     delete config;
     PrintToServer("\"%s\"::OnPluginStart()\n--------------------------------------------------------", PLUGIN_NAME);
 }
@@ -72,8 +94,12 @@ public void OnMapStart()
     any m_vecOrigin_offset = FindSendPropInfo("CWorld", "m_vecOrigin");
     PrintToServer("m_vecOrigin::Offset: %u", m_vecOrigin_offset);
 
+    /*
     // pray this doesn't break and cause massive explosions
     world_address.low += m_vecOrigin_offset;
+    */
+
+    world_address.Add(m_vecOrigin_offset);
     int64_t newVectorX = { view_as<int>(3124984.00), 0 };
     StoreToAddress64(world_address, NumberType_Int32, newVectorX, .setMemAccess = false);
 
