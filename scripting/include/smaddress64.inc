@@ -380,6 +380,19 @@ stock int64_t IntRtsInt64(int64_t left, int right)
 	return result;
 }
 
+/**
+ * Inverts all of the bits in an int64_t value.
+ * 
+ * @param value			The int64_t value.
+ * @return				An int64_t value after the NOT operation.
+ */
+stock int64_t NotInt64(int64_t value)
+{
+	int64_t result;
+	result.low = ~value.low, result.high = ~value.high;
+	return result;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // INT64_T ENUM STRUCT                                                      //
 //////////////////////////////////////////////////////////////////////////////
