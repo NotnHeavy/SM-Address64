@@ -19,7 +19,7 @@ public Plugin myinfo =
     name = PLUGIN_NAME,
     author = "NotnHeavy",
     description = "Testing plugin for SM-Address64.",
-    version = "1.0",
+    version = "1.1",
     url = "none"
 };
 
@@ -68,14 +68,25 @@ public void OnPluginStart()
     int64_t f;
 
     PrintToServer("c: low %u high %u", c.low, c.high);
-    f = MulInt64(c, d); // e doesn't work, fail
+    f = MulInt64(c, d);
     PrintToServer("c * d: low %u high %u", f.low, f.high);
 
     int64_t g = { 489, 1 };
     int h = 1404;
     PrintToServer("g: low %u high %u", g.low, g.high);
     g.Sub(h);
-    PrintToServer("g - h: low %u high %u\n", g.low, g.high);
+    PrintToServer("g - h: low %u high %u", g.low, g.high);
+
+    int64_t i = { 456, 4 };
+    int64_t j = { 234, 0 };
+    PrintToServer("j: low %u high %u", j.low, j.high);
+    j.Or64(i);
+    PrintToServer("j | i: low %u high %u", j.low, j.high);
+
+    int64_t k = { 456, 4 };
+    PrintToServer("k: low %u high %u", k.low, k.high);
+    k = IntRtsInt64(k, 34);
+    PrintToServer("k >> 34: low %u high %u\n", k.low, k.high);
 
     delete config;
     PrintToServer("\"%s\"::OnPluginStart()\n--------------------------------------------------------", PLUGIN_NAME);
@@ -108,5 +119,5 @@ public void OnMapStart()
     GetEntPropVector(0, Prop_Send, "m_vecOrigin", vectorbuffer);
     PrintToServer("m_vecOrigin::x: %f\n", vectorbuffer[0]);
 
-    PrintToServer("\n\"%s\"::OnMapStart()\n--------------------------------------------------------", PLUGIN_NAME);
+    PrintToServer("\"%s\"::OnMapStart()\n--------------------------------------------------------", PLUGIN_NAME);
 }

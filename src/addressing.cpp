@@ -155,7 +155,7 @@ static cell_t Native_GetEntityAddress64(IPluginContext* pContext, const cell_t* 
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// INT64 NATIVES                                                            //
+// INT64 ARITHMETIC NATIVES                                                 //
 //////////////////////////////////////////////////////////////////////////////
 
 static cell_t Native_AddInt64(IPluginContext* pContext, const cell_t* params)
@@ -227,6 +227,44 @@ static cell_t Native_DivInt64(IPluginContext* pContext, const cell_t* params)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// INT64 BITSHIFT NATIVES                                                   //
+//////////////////////////////////////////////////////////////////////////////
+
+static cell_t Native_LtsInt64(IPluginContext* pContext, const cell_t* params)
+{
+    // Obtain parameters.
+    int64_t* left;
+    int64_t* right;
+    int64_t* result;
+    
+    // Obtain addresses to buffers.
+    pContext->LocalToPhysAddr(params[1], reinterpret_cast<cell_t**>(&left));
+    pContext->LocalToPhysAddr(params[2], reinterpret_cast<cell_t**>(&right));
+    pContext->LocalToPhysAddr(params[3], reinterpret_cast<cell_t**>(&result));
+
+    // Perform add and return.
+    *result = *left << *right;
+    return 0;
+}
+
+static cell_t Native_RtsInt64(IPluginContext* pContext, const cell_t* params)
+{
+    // Obtain parameters.
+    int64_t* left;
+    int64_t* right;
+    int64_t* result;
+    
+    // Obtain addresses to buffers.
+    pContext->LocalToPhysAddr(params[1], reinterpret_cast<cell_t**>(&left));
+    pContext->LocalToPhysAddr(params[2], reinterpret_cast<cell_t**>(&right));
+    pContext->LocalToPhysAddr(params[3], reinterpret_cast<cell_t**>(&result));
+
+    // Perform add and return.
+    *result = *left >> *right;
+    return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // NATIVE EXPORTS                                                           //
 //////////////////////////////////////////////////////////////////////////////
 
@@ -241,6 +279,9 @@ sp_nativeinfo_t g_AddressNatives[] = {
     { "Native_SubInt64",            Native_SubInt64 },
     { "Native_MulInt64",            Native_MulInt64 },
     { "Native_DivInt64",            Native_DivInt64 },
+
+    { "Native_LtsInt64",            Native_LtsInt64 },
+    { "Native_RtsInt64",            Native_RtsInt64 },
 
     { nullptr,                      nullptr }
 };

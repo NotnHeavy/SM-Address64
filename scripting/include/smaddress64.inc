@@ -109,7 +109,7 @@ stock int64_t GetEntityAddress64(int entity)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// INT64_T FUNCTIONS                                                        //
+// INT64_T ARITHMETIC FUNCTIONS                                             //
 //////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -233,6 +233,154 @@ stock int64_t IntDivInt64(int64_t left, int right)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// INT64_T BITWISE FUNCTIONS                                                //
+//////////////////////////////////////////////////////////////////////////////
+
+/**
+ * ANDs an int64_t with an int64_t.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int64_t value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t AndInt64(int64_t left, int64_t right)
+{
+	int64_t result;
+	result.low = left.low & right.low, result.high = left.high & right.high;
+	return result;
+}
+
+/**
+ * ORs an int64_t with an int64_t.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int64_t value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t OrInt64(int64_t left, int64_t right)
+{
+	int64_t result;
+	result.low = left.low | right.low, result.high = left.high | right.high;
+	return result;
+}
+
+/**
+ * XORs an int64_t with an int64_t.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int64_t value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t XorInt64(int64_t left, int64_t right)
+{
+	int64_t result;
+	result.low = left.low ^ right.low, result.high = left.high ^ right.high;
+	return result;
+}
+
+/**
+ * Shifts an int64_t left by an int64_t.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int64_t value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t LtsInt64(int64_t left, int64_t right)
+{
+	int64_t result;
+	Native_LtsInt64(left, right, result);
+	return result;
+}
+
+/**
+ * Shifts an int64_t right by an int64_t.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int64_t value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t RtsInt64(int64_t left, int64_t right)
+{
+	int64_t result;
+	Native_RtsInt64(left, right, result);
+	return result;
+}
+
+/**
+ * ANDs an int64_t with an int.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t IntAndInt64(int64_t left, int right)
+{
+	int64_t result;
+	result.low = left.low & right, result.high = 0;
+	return result;
+}
+
+/**
+ * ORs an int64_t with an int.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t IntOrInt64(int64_t left, int right)
+{
+	int64_t result;
+	result.low = left.low | right, result.high = left.high;
+	return result;
+}
+
+/**
+ * XORs an int64_t with an int.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t IntXorInt64(int64_t left, int right)
+{
+	int64_t result;
+	result.low = left.low ^ right, result.high = left.high;
+	return result;
+}
+
+/**
+ * Shifts an int64_t left by an int.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t IntLtsInt64(int64_t left, int right)
+{
+	int64_t result;
+	int64_t buffer;
+	buffer.low = right;
+	Native_LtsInt64(left, buffer, result);
+	return result;
+}
+
+/**
+ * Shifts an int64_t right by an int.
+ * 
+ * @param left			The left-most int64_t value.
+ * @param right			The right-most int value.
+ * @return				The result of the operation as an int64_t.
+ */
+stock int64_t IntRtsInt64(int64_t left, int right)
+{
+	int64_t result;
+	int64_t buffer;
+	buffer.low = right;
+	Native_RtsInt64(left, buffer, result);
+	return result;
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // INT64_T ENUM STRUCT                                                      //
 //////////////////////////////////////////////////////////////////////////////
 
@@ -296,6 +444,61 @@ enum struct int64_t
 	{
 		Native_DivInt64(this, right, this);
 	}
+
+	// Bitwise operations.
+	void And(int right)
+	{
+		this.low &= right;
+		this.high = 0;
+	}
+	void Or(int right)
+	{
+		this.low |= right;
+	}
+	void Xor(int right)
+	{
+		this.low ^= right;
+	}
+	void Lts(int right)
+	{
+		int64_t buffer;
+		buffer.low = right;
+		Native_LtsInt64(this, buffer, this);
+	}
+	void Rts(int right)
+	{
+		int64_t buffer;
+		buffer.low = right;
+		Native_RtsInt64(this, buffer, this);
+	}
+	void And64(int64_t right)
+	{
+		this.low &= right.low;
+		this.high = right.high;
+	}
+	void Or64(int64_t right)
+	{
+		this.low |= right.low;
+		this.high |= right.high;
+	}
+	void Xor64(int64_t right)
+	{
+		this.low ^= right.low;
+		this.high &= right.high;
+	}
+	void Lts64(int64_t right)
+	{
+		Native_LtsInt64(this, right, this);
+	}
+	void Rts64(int64_t right)
+	{
+		Native_RtsInt64(this, right, this);
+	}
+	void Not()
+	{
+		this.low = ~this.low;
+		this.high = ~this.high;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -312,6 +515,9 @@ native void Native_AddInt64(any left[2], any right[2], any result[2]);
 native void Native_SubInt64(any left[2], any right[2], any result[2]);
 native void Native_MulInt64(any left[2], any right[2], any result[2]);
 native void Native_DivInt64(any left[2], any right[2], any result[2]);
+
+native void Native_LtsInt64(any left[2], any right[2], any result[2]);
+native void Native_RtsInt64(any left[2], any right[2], any result[2]);
 
 //////////////////////////////////////////////////////////////////////////////
 // EXTENSION INTERFACE                                                      //
