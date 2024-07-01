@@ -30,9 +30,37 @@
 
 const NumberType NumberType_Int64 = view_as<NumberType>(3);
 
+enum Architecture
+{
+	Architecture_x86,
+	Architecture_x64
+};
+
 //////////////////////////////////////////////////////////////////////////////
 // ADDRESS FUNCTIONS                                                        //
 //////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Get this architecture's pointer size. (4 = 32-bit, 8 = 64-bit)
+ * 
+ * @return				Pointer size of the architecture used for this program.
+ */
+stock int GetPointerSize()
+{
+	return Native_GetPointerSize();
+}
+
+/**
+ * Returns whether the architecture used currently is x86-32 or x86-64.
+ * 
+ * @return				The architecture used.
+ */
+stock Architecture GetArchitecture()
+{
+	if (GetPointerSize() == 4)
+		return Architecture_x86;
+	return Architecture_x64;
+}
 
 /**
  * Dereferences a 64-bit address.
@@ -518,6 +546,7 @@ enum struct int64_t
 // NATIVES                                                                  //
 //////////////////////////////////////////////////////////////////////////////
 
+native int Native_GetPointerSize();
 native void Native_LoadFromAddress64(any address[2], NumberType size, any buffer[2]);
 native void Native_StoreToAddress64(any address[2], NumberType size, any buffer[2], bool setMemAccess = true);
 native void Native_FromPseudoAddress(Address pseudoAddress, any address64[2]);

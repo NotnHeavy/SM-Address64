@@ -28,6 +28,11 @@ enum struct NumberType
 // ADDRESS NATIVES                                                          //
 //////////////////////////////////////////////////////////////////////////////
 
+static cell_t Native_GetPointerSize(IPluginContext* pContext, const cell_t* params)
+{
+    return sizeof(void*);
+}
+
 static cell_t Native_LoadFromAddress64(IPluginContext* pContext, const cell_t* params)
 {
     // Obtain parameters.
@@ -54,7 +59,7 @@ static cell_t Native_LoadFromAddress64(IPluginContext* pContext, const cell_t* p
         *buffer = *(int32_t*)address;
         break;
     case NumberType::NumberType_Int64:
-        *buffer = *address;
+        *buffer = *(int64_t*)address;
         break;
     default:
         pContext->ReportError("Invalid NumberType value %d", type);
@@ -99,7 +104,7 @@ static cell_t Native_StoreToAddress64(IPluginContext* pContext, const cell_t* pa
     case NumberType::NumberType_Int64:
         if (updateMemAccess)
             SourceHook::SetMemAccess(address, sizeof(int64_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
-        *address = *buffer;
+        *(int64_t*)address = *(int64_t*)buffer;
         break;
     default:
         pContext->ReportError("Invalid NumberType value %d", type);
@@ -119,7 +124,11 @@ static cell_t Native_FromPseudoAddress(IPluginContext* pContext, const cell_t* p
     pContext->LocalToPhysAddr(params[2], reinterpret_cast<cell_t**>(&buffer));
 
     // Convert the pseudo-address to an absolute address.
+#ifdef PLATFORM_X86
+    *buffer = pseudoAddress;
+#else
     *buffer = (uintptr_t)smutils->FromPseudoAddress(pseudoAddress);
+#endif
     return 0;
 }
 
@@ -132,7 +141,11 @@ static cell_t Native_ToPseudoAddress(IPluginContext* pContext, const cell_t* par
     pContext->LocalToPhysAddr(params[1], reinterpret_cast<cell_t**>(&address));
 
     // Convert the absolute address to a pseudo-address.
+#ifdef PLATFORM_X86
+    return *address; // Just return the original address.
+#else
     return smutils->ToPseudoAddress(reinterpret_cast<void*>(*address)); // no uintptr_t?
+#endif
 }
 
 static cell_t Native_GetEntityAddress64(IPluginContext* pContext, const cell_t* params)
@@ -269,6 +282,7 @@ static cell_t Native_RtsInt64(IPluginContext* pContext, const cell_t* params)
 //////////////////////////////////////////////////////////////////////////////
 
 sp_nativeinfo_t g_AddressNatives[] = {
+    { "Native_GetPointerSize", Native_GetPointerSize },
     { "Native_LoadFromAddress64",   Native_LoadFromAddress64 },
     { "Native_StoreToAddress64",    Native_StoreToAddress64 },
     { "Native_FromPseudoAddress",   Native_FromPseudoAddress },

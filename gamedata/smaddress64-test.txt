@@ -7,6 +7,7 @@
             "i_honestly_dont_know_what_function_this_is_i_just_picked_a_random_one_from_ida"
             {
                 "library"   "server"
+                "windows"   "\x55\x8B\xEC\x83\xEC\x10\x53\x56\x8B\xF1\x8B\x0D\x2A\x2A\x2A\x2A"
                 "windows64" "\x48\x89\x5C\x24\x08\x57\x48\x83\xEC\x60\x48\x8B\xD9\x8B\xFA"
             }
         }

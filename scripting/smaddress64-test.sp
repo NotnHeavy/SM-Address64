@@ -19,7 +19,7 @@ public Plugin myinfo =
     name = PLUGIN_NAME,
     author = "NotnHeavy",
     description = "Testing plugin for SM-Address64.",
-    version = "1.1",
+    version = "1.2",
     url = "none"
 };
 
@@ -32,6 +32,9 @@ public void OnPluginStart()
     LoadTranslations("common.phrases");
     PrintToServer("--------------------------------------------------------");
     
+    // get the pointer size
+    PrintToServer("pointer size: %u\n", GetPointerSize());
+
     // nt info
     int64_t KUSER_SHARED_DATA = { 0x7FFE0000, 0x00 };
     KUSER_SHARED_DATA.low += 0x26C;

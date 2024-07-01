@@ -48,10 +48,6 @@ SMEXT_LINK(&g_SMAddress64);
 
 void SMAddress64::SDK_OnAllLoaded()
 {
-#ifdef PLATFORM_X86
-    assert(false);
-#endif
-
     sharesys->RegisterLibrary(myself, "SM-Address64");
     sharesys->AddNatives(myself, g_AddressNatives);
 }
