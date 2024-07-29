@@ -1,6 +1,6 @@
 # SM-Address64
 
-**2024.07.29 update**: [there currently exists in the works a SourceMod handle](https://github.com/alliedmodders/sourcemod/pull/2196) which is designed to replace pseudo addresses. It is currently not available in vanilla SourceMod.
+**2024.07.29 update: [there currently exists in the works a SourceMod handle](https://github.com/alliedmodders/sourcemod/pull/2196) which is designed to replace pseudo addresses. It is currently not available in vanilla SourceMod.**
 
 This is a temporary extension that provides a `int64_t` enum struct, containing the fields `low` and `high` in their respective order, respecting little-endianness. Provided is a few basic arithmetic natives, alongside addressing natives - the main point of this extension. These addressing natives provide basic addressing functionality within 64-bit SourceMod plugins, which may be necessary following the eventual transition of Team Fortress 2 from 32-bit to 64-bit.
 
