@@ -1,5 +1,7 @@
 # SM-Address64
 
+2024.07.29 update: [there currently exists in the works a SourceMod handle](https://github.com/alliedmodders/sourcemod/pull/2196) which is designed to replace pseudo addresses. It is currently not available in vanilla SourceMod.
+
 This is a temporary extension that provides a `int64_t` enum struct, containing the fields `low` and `high` in their respective order, respecting little-endianness. Provided is a few basic arithmetic natives, alongside addressing natives - the main point of this extension. These addressing natives provide basic addressing functionality within 64-bit SourceMod plugins, which may be necessary following the eventual transition of Team Fortress 2 from 32-bit to 64-bit.
 
 The following addressing natives are exposed:
@@ -8,8 +10,6 @@ The following addressing natives are exposed:
 - FromPseudoAddress
 - ToPseudoAddress
 - GetEntityAddress64
-
-Hopefully a better solution will come round soon. There does exist this [extension as well](https://github.com/skial-com/port64/), for anyone curious.
 
 ## Why not use pseudo addresses?
 Pseudo-addressing was a feature implemented in SourceMod's API as a consequence of SourcePawn only providing 32-bit cells. Pseudo addresses allocate 6 bits as an index, with the following 26 bits being a relative address. The index (0-63) is used in an internal table, which provides the absolute address of any internally loaded module's image base (such as server.dll/server_srv.so) referenced by the desired index. The relative address is added onto this, which is then used to create a complete address.
