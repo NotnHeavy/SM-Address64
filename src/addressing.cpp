@@ -50,16 +50,16 @@ static cell_t Native_LoadFromAddress64(IPluginContext* pContext, const cell_t* p
     switch (type)
     {
     case NumberType::NumberType_Int8:
-        *buffer = *(int8_t*)(address);
+        *buffer = *(uint8_t*)(address);
         break;
     case NumberType::NumberType_Int16:
-        *buffer = *(int16_t*)(address);
+        *buffer = *(uint16_t*)(address);
         break;
     case NumberType::NumberType_Int32:
-        *buffer = *(int32_t*)address;
+        *buffer = *(uint32_t*)address;
         break;
     case NumberType::NumberType_Int64:
-        *buffer = *(int64_t*)address;
+        *buffer = *(uint64_t*)address;
         break;
     default:
         pContext->ReportError("Invalid NumberType value %d", type);
@@ -88,23 +88,23 @@ static cell_t Native_StoreToAddress64(IPluginContext* pContext, const cell_t* pa
     {
     case NumberType::NumberType_Int8:
         if (updateMemAccess)
-            SourceHook::SetMemAccess(address, sizeof(int8_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
-        *(int8_t*)address = *(int8_t*)buffer;
+            SourceHook::SetMemAccess(address, sizeof(uint8_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
+        *(uint8_t*)address = *(uint8_t*)buffer;
         break;
     case NumberType::NumberType_Int16:
         if (updateMemAccess)
-            SourceHook::SetMemAccess(address, sizeof(int16_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
-        *(int16_t*)address = *(int16_t*)buffer;
+            SourceHook::SetMemAccess(address, sizeof(uint16_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
+        *(uint16_t*)address = *(uint16_t*)buffer;
         break;
     case NumberType::NumberType_Int32:
         if (updateMemAccess)
-            SourceHook::SetMemAccess(address, sizeof(int32_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
-        *(int32_t*)address = *(int32_t*)buffer;
+            SourceHook::SetMemAccess(address, sizeof(uint32_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
+        *(uint32_t*)address = *(uint32_t*)buffer;
         break;
     case NumberType::NumberType_Int64:
         if (updateMemAccess)
-            SourceHook::SetMemAccess(address, sizeof(int64_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
-        *(int64_t*)address = *(int64_t*)buffer;
+            SourceHook::SetMemAccess(address, sizeof(uint64_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
+        *(uint64_t*)address = *(uint64_t*)buffer;
         break;
     default:
         pContext->ReportError("Invalid NumberType value %d", type);
@@ -282,7 +282,7 @@ static cell_t Native_RtsInt64(IPluginContext* pContext, const cell_t* params)
 //////////////////////////////////////////////////////////////////////////////
 
 sp_nativeinfo_t g_AddressNatives[] = {
-    { "Native_GetPointerSize", Native_GetPointerSize },
+    { "Native_GetPointerSize",      Native_GetPointerSize },
     { "Native_LoadFromAddress64",   Native_LoadFromAddress64 },
     { "Native_StoreToAddress64",    Native_StoreToAddress64 },
     { "Native_FromPseudoAddress",   Native_FromPseudoAddress },

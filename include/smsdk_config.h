@@ -40,7 +40,7 @@
 /* Basic information exposed publicly */
 #define SMEXT_CONF_NAME			"SM-Address64"
 #define SMEXT_CONF_DESCRIPTION	"A temporary solution for 64-bit addressing"
-#define SMEXT_CONF_VERSION		"1.2.0.0"
+#define SMEXT_CONF_VERSION		"1.2.1.0"
 #define SMEXT_CONF_AUTHOR		"NotnHeavy"
 #define SMEXT_CONF_URL			"http://www.github.com/notnheavy"
 #define SMEXT_CONF_LOGTAG		"smaddress64"
