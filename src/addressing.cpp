@@ -40,6 +40,7 @@ static cell_t Native_LoadFromAddress64(IPluginContext* pContext, const cell_t* p
     uintptr_t* address;
     uintptr_t** addressBuffer;
     const NumberType type = static_cast<NumberType>(params[2]);
+    int offset = params[4];
 
     // Obtain addresses to buffers.
     pContext->LocalToPhysAddr(params[3], reinterpret_cast<cell_t**>(&buffer));
@@ -50,16 +51,16 @@ static cell_t Native_LoadFromAddress64(IPluginContext* pContext, const cell_t* p
     switch (type)
     {
     case NumberType::NumberType_Int8:
-        *buffer = *(uint8_t*)(address);
+        *buffer = *((uint8_t*)address + offset);
         break;
     case NumberType::NumberType_Int16:
-        *buffer = *(uint16_t*)(address);
+        *buffer = *((uint16_t*)address + offset);
         break;
     case NumberType::NumberType_Int32:
-        *buffer = *(uint32_t*)address;
+        *buffer = *((uint32_t*)address + offset);
         break;
     case NumberType::NumberType_Int64:
-        *buffer = *(uint64_t*)address;
+        *buffer = *((uint64_t*)address + offset);
         break;
     default:
         pContext->ReportError("Invalid NumberType value %d", type);
@@ -77,6 +78,7 @@ static cell_t Native_StoreToAddress64(IPluginContext* pContext, const cell_t* pa
     uintptr_t** addressBuffer;
     const NumberType type = static_cast<NumberType>(params[2]);
     const bool updateMemAccess = params[4];
+    int offset = params[5];
 
     // Obtain addresses to buffers.
     pContext->LocalToPhysAddr(params[3], reinterpret_cast<cell_t**>(&buffer));
@@ -87,25 +89,37 @@ static cell_t Native_StoreToAddress64(IPluginContext* pContext, const cell_t* pa
     switch (type)
     {
     case NumberType::NumberType_Int8:
+    {
+        uint8_t* writeAddress = (uint8_t*)address + offset;
         if (updateMemAccess)
-            SourceHook::SetMemAccess(address, sizeof(uint8_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
-        *(uint8_t*)address = *(uint8_t*)buffer;
+            SourceHook::SetMemAccess(writeAddress, sizeof(uint8_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
+        *(uint8_t*)writeAddress = *(uint8_t*)buffer;
         break;
+    }
     case NumberType::NumberType_Int16:
+    {
+        uint16_t* writeAddress = (uint16_t*)address + offset;
         if (updateMemAccess)
-            SourceHook::SetMemAccess(address, sizeof(uint16_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
+            SourceHook::SetMemAccess(writeAddress, sizeof(uint16_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
         *(uint16_t*)address = *(uint16_t*)buffer;
         break;
+    }
     case NumberType::NumberType_Int32:
+    {
+        uint32_t* writeAddress = (uint32_t*)address + offset;
         if (updateMemAccess)
-            SourceHook::SetMemAccess(address, sizeof(uint32_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
+            SourceHook::SetMemAccess(writeAddress, sizeof(uint32_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
         *(uint32_t*)address = *(uint32_t*)buffer;
         break;
+    }
     case NumberType::NumberType_Int64:
+    {
+        uint64_t* writeAddress = (uint64_t*)address + offset;
         if (updateMemAccess)
-            SourceHook::SetMemAccess(address, sizeof(uint64_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
+            SourceHook::SetMemAccess(writeAddress, sizeof(uint64_t), SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
         *(uint64_t*)address = *(uint64_t*)buffer;
         break;
+    }
     default:
         pContext->ReportError("Invalid NumberType value %d", type);
         return 1;
@@ -164,6 +178,38 @@ static cell_t Native_GetEntityAddress64(IPluginContext* pContext, const cell_t* 
 
     // Store the entity address into the address buffer.
     *buffer = reinterpret_cast<uintptr_t>(pEntity);
+    return 0;
+}
+
+static cell_t Native_Malloc64(IPluginContext* pContext, const cell_t* params)
+{
+    // Obtain parameters.
+    cell_t size = params[1];
+    uintptr_t* buffer;
+
+    // Obtain addressses to buffers.
+    pContext->LocalToPhysAddr(params[2], reinterpret_cast<cell_t**>(&buffer));
+
+    // Allocate desired memory and return.
+    *buffer = (uintptr_t)calloc(1, size);
+    if (!*buffer)
+    {
+        pContext->ReportError("Could not allocate memory!");
+        return 1;
+    }
+    return 0;
+}
+
+static cell_t Native_Free64(IPluginContext* pContext, const cell_t* params)
+{
+    // Obtain parameters.
+    uintptr_t* buffer;
+
+    // Obtain addressses to buffers.
+    pContext->LocalToPhysAddr(params[1], reinterpret_cast<cell_t**>(&buffer));
+
+    // Free memory and return.
+    free((void*)*buffer);
     return 0;
 }
 
@@ -288,6 +334,8 @@ sp_nativeinfo_t g_AddressNatives[] = {
     { "Native_FromPseudoAddress",   Native_FromPseudoAddress },
     { "Native_ToPseudoAddress",     Native_ToPseudoAddress },
     { "Native_GetEntityAddress64",  Native_GetEntityAddress64 },
+    { "Native_Malloc64",            Native_Malloc64 },
+    { "Native_Free64",              Native_Free64 },
 
     { "Native_AddInt64",            Native_AddInt64 },
     { "Native_SubInt64",            Native_SubInt64 },

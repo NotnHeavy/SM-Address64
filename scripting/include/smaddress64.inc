@@ -67,12 +67,14 @@ stock Architecture GetArchitecture()
  * 
  * @param address   	An int64_t address to dereference from.
  * @param size      	The bit-width of the value located at the address.
+ * @param offset		An optional offset from address. The offset is independent from
+ * 						the type used.
  * @return          	An int64_t object.
  */
-stock int64_t LoadFromAddress64(int64_t address, NumberType size)
+stock int64_t LoadFromAddress64(int64_t address, NumberType size, int offset = 0)
 {
 	any returnBuffer[2];
-	Native_LoadFromAddress64(address, size, returnBuffer);
+	Native_LoadFromAddress64(address, size, returnBuffer, offset);
 	
 	// This has to be done to prevent a packed/unpacked array warning. 
 	int64_t returnObj;
@@ -87,10 +89,12 @@ stock int64_t LoadFromAddress64(int64_t address, NumberType size)
  * @param size			The bit-width of the value to store.
  * @param setMemAccess	Sets the memory access if toggled (which is the case by default).
  * 						May be necessary for some regions of memory that are read-only.
+ * @param offset		An optional offset from address. The offset is independent from
+ * 						the type used.
  */
-stock void StoreToAddress64(int64_t address, NumberType size, int64_t buffer, bool setMemAccess = true)
+stock void StoreToAddress64(int64_t address, NumberType size, int64_t buffer, bool setMemAccess = true, int offset = 0)
 {
-	Native_StoreToAddress64(address, size, buffer, setMemAccess);
+	Native_StoreToAddress64(address, size, buffer, setMemAccess, offset);
 }
 
 /**
@@ -421,6 +425,31 @@ stock int64_t NotInt64(int64_t value)
 	return result;
 }
 
+/**
+ * Dynamically allocate a set width of memory, which are automatically
+ * zero'd.
+ * 
+ * @param size     		The size of memory to allocate.
+ * @return         		An int64_t address to the newly allocated memory.
+ * @error				Could not allocate memory.
+ */
+stock int64_t Malloc64(int size)
+{
+	int64_t result;
+	Native_Malloc64(size, result);
+	return result;
+}
+
+/**
+ * Free a block of dynamically allocated memory.
+ * 
+ * @param address		The address where memory should be freed.
+ */
+stock void Free64(int64_t address)
+{
+	Native_Free64(address);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // INT64_T ENUM STRUCT                                                      //
 //////////////////////////////////////////////////////////////////////////////
@@ -547,8 +576,8 @@ enum struct int64_t
 //////////////////////////////////////////////////////////////////////////////
 
 native int Native_GetPointerSize();
-native void Native_LoadFromAddress64(any address[2], NumberType size, any buffer[2]);
-native void Native_StoreToAddress64(any address[2], NumberType size, any buffer[2], bool setMemAccess = true);
+native void Native_LoadFromAddress64(any address[2], NumberType size, any buffer[2], int offset = 0);
+native void Native_StoreToAddress64(any address[2], NumberType size, any buffer[2], bool setMemAccess = true, int offset = 0);
 native void Native_FromPseudoAddress(Address pseudoAddress, any address64[2]);
 native Address Native_ToPseudoAddress(any address64[2]);
 native void Native_GetEntityAddress64(int entity, any address64[2]);
@@ -560,6 +589,9 @@ native void Native_DivInt64(any left[2], any right[2], any result[2]);
 
 native void Native_LtsInt64(any left[2], any right[2], any result[2]);
 native void Native_RtsInt64(any left[2], any right[2], any result[2]);
+
+native void Native_Malloc64(int size, any result[2]);
+native void Native_Free64(any address[2]);
 
 //////////////////////////////////////////////////////////////////////////////
 // EXTENSION INTERFACE                                                      //

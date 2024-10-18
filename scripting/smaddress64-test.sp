@@ -19,7 +19,7 @@ public Plugin myinfo =
     name = PLUGIN_NAME,
     author = "NotnHeavy",
     description = "Testing plugin for SM-Address64.",
-    version = "1.2",
+    version = "1.3",
     url = "none"
 };
 
