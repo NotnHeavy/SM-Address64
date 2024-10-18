@@ -568,7 +568,7 @@ native void Native_RtsInt64(any left[2], any right[2], any result[2]);
 public Extension __ext_sm_address64 = 
 {
 	name = "SM-Address64",
-	file = "sm-address64.ext.dll",
+	file = "sm-address64.ext",
 #if defined AUTOLOAD_EXTENSIONS
 	autoload = 1,
 #else
